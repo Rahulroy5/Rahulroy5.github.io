@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rahul Kumar | AI Engineer</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'Fira Code', monospace; }
+
+        body { background: #080810; color: #e2e8f0; overflow-x: hidden; }
+
+        #progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #3b82f6, #06b6d4);
+            z-index: 9999; transition: width 0.1s;
+        }
+
+        nav {
+            background: rgba(8,8,16,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #a78bfa, #60a5fa, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(90px); opacity: 0.12;
+            animation: float 10s ease-in-out infinite;
+        }
+        .orb-1 { width: 500px; height: 500px; background: #7c3aed; top: -150px; right: 50px; }
+        .orb-2 { width: 350px; height: 350px; background: #3b82f6; bottom: 50px; right: 250px; animation-delay: -4s; }
+        .orb-3 { width: 250px; height: 250px; background: #06b6d4; top: 250px; right: 0; animation-delay: -7s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(124,58,237,0.35);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(124,58,237,0.12);
+        }
+
+        .profile-ring {
+            background: linear-gradient(135deg, #7c3aed, #3b82f6, #06b6d4);
+            padding: 3px; border-radius: 9999px;
+        }
+        .profile-inner {
+            background: #080810; border-radius: 9999px; padding: 4px;
+        }
+        .profile-glow {
+            filter: drop-shadow(0 0 40px rgba(124,58,237,0.5)) drop-shadow(0 0 80px rgba(59,130,246,0.3));
+        }
+
+        .timeline-line {
+            background: linear-gradient(to bottom, #7c3aed, #3b82f6, transparent);
+        }
+        .timeline-dot {
+            width: 14px; height: 14px;
+            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(124,58,237,0.2), 0 0 20px rgba(124,58,237,0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            opacity: 0.88; transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(124,58,237,0.4);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(124,58,237,0.4);
+            transform: translateY(-2px);
+        }
+
+        .skill-chip {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.2s;
+        }
+        .skill-chip:hover {
+            background: rgba(124,58,237,0.12);
+            border-color: rgba(124,58,237,0.4);
+        }
+
+        .section-label {
+            font-size: 0.7rem; letter-spacing: 0.2em;
+            color: #7c3aed; font-weight: 600;
+        }
+
+        section { scroll-margin-top: 80px; }
+
+        #mobile-menu { display: none; }
+        #mobile-menu.open { display: flex; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #080810; }
+        ::-webkit-scrollbar-thumb { background: #7c3aed44; border-radius: 10px; }
+    </style>
+</head>
+
+<body>
+<div id="progress-bar" style="width:0%"></div>
+
+<!-- ═══ NAVBAR ═══════════════════════════════════════════════ -->
+<nav class="fixed w-full top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="#hero" class="mono text-sm gradient-text font-medium">rahul.kumar</a>
+
+        <div class="hidden md:flex items-center gap-8">
+            <a href="#about"       class="text-slate-400 hover:text-white text-sm transition-colors duration-200">About</a>
+            <a href="#experience"  class="text-slate-400 hover:text-white text-sm transition-colors duration-200">Experience</a>
+            <a href="#projects"    class="text-slate-400 hover:text-white text-sm transition-colors duration-200">Projects</a>
+            <a href="#skills"      class="text-slate-400 hover:text-white text-sm transition-colors duration-200">Skills</a>
+            <a href="#achievements" class="text-slate-400 hover:text-white text-sm transition-colors duration-200">Achievements</a>
+            <a href="#blog"        class="text-slate-400 hover:text-white text-sm transition-colors duration-200">Blog</a>
+            <a href="#contact"     class="text-slate-400 hover:text-white text-sm transition-colors duration-200">Contact</a>
+            <a href="mailto:rroy3736@gmail.com" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-white">Hire Me</a>
+        </div>
+
+        <button id="hamburger" class="md:hidden text-slate-400 hover:text-white text-xl">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <div id="mobile-menu" class="md:hidden flex-col px-6 pb-6 gap-4 border-t border-white/5">
+        <a href="#about"        class="text-slate-400 hover:text-white text-sm pt-4">About</a>
+        <a href="#experience"   class="text-slate-400 hover:text-white text-sm">Experience</a>
+        <a href="#projects"     class="text-slate-400 hover:text-white text-sm">Projects</a>
+        <a href="#skills"       class="text-slate-400 hover:text-white text-sm">Skills</a>
+        <a href="#achievements" class="text-slate-400 hover:text-white text-sm">Achievements</a>
+        <a href="#blog"         class="text-slate-400 hover:text-white text-sm">Blog</a>
+        <a href="#contact"      class="text-slate-400 hover:text-white text-sm">Contact</a>
+    </div>
+</nav>
+
+<!-- ═══ HERO ══════════════════════════════════════════════════ -->
+<section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Grid pattern overlay -->
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:60px 60px;"></div>
+
+    <div class="max-w-6xl mx-auto px-6 py-32 grid md:grid-cols-2 gap-16 items-center relative z-10">
+
+        <!-- Text -->
+        <div>
+            <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-slate-400 mb-8" data-aos="fade-up">
+                <span class="w-2 h-2 bg-emerald-400 rounded-full" style="box-shadow:0 0 8px #34d399;animation:pulse 2s infinite"></span>
+                Available for opportunities
+            </div>
+
+            <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-4" data-aos="fade-up" data-aos-delay="80">
+                Hi, I'm<br><span class="gradient-text">Rahul Kumar</span>
+            </h1>
+
+            <div class="text-2xl text-slate-300 font-medium mb-6 h-9" data-aos="fade-up" data-aos-delay="160">
+                <span id="typed-text"></span>
+            </div>
+
+            <p class="text-slate-400 text-lg leading-relaxed mb-10 max-w-md" data-aos="fade-up" data-aos-delay="240">
+                IIT Bombay graduate building production-ready AI systems — agents, RAG pipelines, fine-tuned models, and deployed APIs. I understand systems at the mechanism level, not just the library level.
+            </p>
+
+            <div class="flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="320">
+                <a href="#projects"  class="btn-primary px-6 py-3 rounded-xl font-semibold text-white text-sm">
+                    View Projects <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+                <a href="https://github.com/Rahulroy5" target="_blank" class="btn-outline px-6 py-3 rounded-xl font-semibold text-slate-300 text-sm">
+                    <i class="fab fa-github mr-2"></i>GitHub
+                </a>
+                <a href="https://linkedin.com/in/rahul-kumar-25a9b2252" target="_blank" class="btn-outline px-6 py-3 rounded-xl font-semibold text-slate-300 text-sm">
+                    <i class="fab fa-linkedin mr-2"></i>LinkedIn
+                </a>
+            </div>
+        </div>
+
+        <!-- Photo -->
+        <div class="flex justify-center" data-aos="fade-left" data-aos-delay="200">
+            <div class="relative profile-glow">
+                <div class="profile-ring w-72 h-72">
+                    <div class="profile-inner w-full h-full">
+                        <img src="https://github.com/Rahulroy5.png" alt="Rahul Kumar"
+                             class="w-full h-full object-cover rounded-full">
+                    </div>
+                </div>
+                <div class="absolute -bottom-5 -right-5 glass-card rounded-2xl px-5 py-3 border border-white/10">
+                    <div class="text-xs text-slate-500 mb-0.5">Based at</div>
+                    <div class="text-sm font-bold text-white">IIT Bombay</div>
+                </div>
+                <div class="absolute -top-5 -left-5 glass-card rounded-2xl px-5 py-3 border border-white/10">
+                    <div class="text-xs text-slate-500 mb-0.5">Experience</div>
+                    <div class="text-sm font-bold text-white">2 Roles</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+        <span class="text-xs text-slate-500 tracking-widest">SCROLL</span>
+        <div class="w-px h-10 bg-gradient-to-b from-violet-500 to-transparent"></div>
+    </div>
+</section>
+
+<!-- ═══ ABOUT ═════════════════════════════════════════════════ -->
+<section id="about" class="py-28">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="mb-16" data-aos="fade-up">
+            <p class="section-label mb-3">WHO I AM</p>
+            <h2 class="text-4xl font-bold text-white">About Me</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-20 items-center">
+            <div data-aos="fade-right">
+                <p class="text-slate-400 text-lg leading-relaxed mb-5">
+                    I'm a final-year <span class="text-white font-medium">B.Tech + M.Tech student at IIT Bombay</span>, majoring in Environmental Engineering with a deep focus on AI and machine learning systems.
+                </p>
+                <p class="text-slate-400 text-lg leading-relaxed mb-5">
+                    My work spans the full AI stack — fine-tuning models, building agentic pipelines, deploying inference servers, and shipping production APIs. I've interned as an AI Engineer at <span class="text-white font-medium">Hashtee Lab</span> and as an AI/ML Developer at <span class="text-white font-medium">Akai Space</span>.
+                </p>
+                <p class="text-slate-400 text-lg leading-relaxed">
+                    Outside of engineering: Gold Medalist in National Science Olympiad, powerlifter (345kg at 60kg BW), and a mentor to 70+ students at IIT Bombay.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4" data-aos="fade-left">
+                <div class="glass-card rounded-2xl p-7 text-center">
+                    <div class="text-4xl font-extrabold gradient-text mb-2">2</div>
+                    <div class="text-slate-400 text-sm">Industry Roles</div>
+                </div>
+                <div class="glass-card rounded-2xl p-7 text-center">
+                    <div class="text-4xl font-extrabold gradient-text mb-2">10+</div>
+                    <div class="text-slate-400 text-sm">Projects Shipped</div>
+                </div>
+                <div class="glass-card rounded-2xl p-7 text-center">
+                    <div class="text-4xl font-extrabold gradient-text mb-2">70+</div>
+                    <div class="text-slate-400 text-sm">Students Mentored</div>
+                </div>
+                <div class="glass-card rounded-2xl p-7 text-center">
+                    <div class="text-4xl font-extrabold gradient-text mb-2">IIT</div>
+                    <div class="text-slate-400 text-sm">Bombay</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ EXPERIENCE ════════════════════════════════════════════ -->
+<section id="experience" class="py-28" style="background:rgba(255,255,255,0.01)">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="mb-16" data-aos="fade-up">
+            <p class="section-label mb-3">WHERE I'VE WORKED</p>
+            <h2 class="text-4xl font-bold text-white">Experience</h2>
+        </div>
+
+        <div class="relative">
+            <div class="absolute left-6 top-2 bottom-2 w-px timeline-line"></div>
+
+            <div class="space-y-10">
+
+                <!-- Hashtee Lab -->
+                <div class="relative pl-16" data-aos="fade-up">
+                    <div class="absolute left-[19px] top-2 timeline-dot"></div>
+                    <div class="glass-card rounded-2xl p-8">
+                        <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+                            <div>
+                                <h3 class="text-xl font-bold text-white mb-1">AI Engineer</h3>
+                                <div class="text-violet-400 font-semibold">Hashtee Lab</div>
+                            </div>
+                            <span class="mono text-xs text-slate-500 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">Feb 2026 – Apr 2026</span>
+                        </div>
+                        <ul class="space-y-2.5 text-slate-400 text-sm mb-6">
+                            <li class="flex gap-2.5"><span class="text-violet-400 shrink-0 mt-0.5">▸</span>Built document intelligence pipelines using dots.ocr, open-source LLMs & VLMs</li>
+                            <li class="flex gap-2.5"><span class="text-violet-400 shrink-0 mt-0.5">▸</span>Deployed models on RunPod GPUs using vLLM & FastAPI for low-latency inference</li>
+                            <li class="flex gap-2.5"><span class="text-violet-400 shrink-0 mt-0.5">▸</span>Integrated open-source models via Hugging Face and external APIs including Grok</li>
+                            <li class="flex gap-2.5"><span class="text-violet-400 shrink-0 mt-0.5">▸</span>Architected end-to-end production AI backend systems in a team of 4 engineers</li>
+                        </ul>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-chip text-xs px-3 py-1.5 rounded-lg text-slate-400">vLLM</span>
+                            <span class="skill-chip text-xs px-3 py-1.5 rounded-lg text-slate-400">FastAPI</span>
+                            <span class="skill-chip text-xs px-3 py-1.5 rounded-lg text-slate-400">RunPod</span>
+                            <span class="skill-chip text-xs px-3 py-1.5 rounded-lg text-slate-400">Hugging Face</span>
+                            <span class="skill-chip text-xs px-3 py-1.5 rounded-lg text-slate-400">OpenLLMs</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Akai Space -->
+                <div class="relative pl-16" data-aos="fade-up" data-aos-delay="100">
+                    <div class="absolute left-[19px] top-2 timeline-dot"></div>
+                    <div class="glass-card rounded-2xl p-8">
+                        <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+                            <div>
+                                <h3 class="text-xl font-bold text-white mb-1">AI/ML Software Developer Intern</h3>
+                                <div class="text-blue-400 font-semibold">Akai Space</div>
+                            </div>
+                            <span class="mono text-xs text-slate-500 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">Jul 2025 – Aug 2025</span>
+                        </div>
+                        <ul class="space-y-2.5 text-slate-400 text-sm mb-6">
+                            <li class="flex gap-2.5"><span class="text-blue-400 shrink-0 mt-0.5">▸</span>Built scene detection module using OpenCV & FFmpeg for keyframe extraction</li>
+                            <li class="flex gap-2.5"><span class="text-blue-400 shrink-0 mt-0.5">▸</span>Designed CV pipelines with TensorFlow for frame-level video analysis at scale</li>
+                            <li class="flex gap-2.5"><span class="text-blue-400 shrink-0 mt-0.5">▸</span>Integrated GPT-4 Vision with custom prompts to produce structured JSON video labels</li>
+                            <li class="flex gap-2.5"><span class="text-blue-400 shrink-0 mt-0.5">▸</span>Optimized ML workflows to support scalable AI engine deployment</li>
+                        </ul>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-chip text-xs px-3 py-1.5 rounded-lg text-slate-400">OpenCV</span>
+                            <span class="skill-chip text-xs px-3 py-1.5 rounded-lg text-slate-400">FFmpeg</span>
+                            <span class="skill-chip text-xs px-3 py-1.5 rounded-lg text-slate-400">TensorFlow</span>
+                            <span class="skill-chip text-xs px-3 py-1.5 rounded-lg text-slate-400">GPT-4 Vision</span>
+                            <span class="skill-chip text-xs px-3 py-1.5 rounded-lg text-slate-400">Python</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ PROJECTS ══════════════════════════════════════════════ -->
+<section id="projects" class="py-28">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="mb-16" data-aos="fade-up">
+            <p class="section-label mb-3">WHAT I'VE BUILT</p>
+            <h2 class="text-4xl font-bold text-white">Projects</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+            <div class="glass-card rounded-2xl p-6 flex flex-col" data-aos="fade-up" data-aos-delay="0">
+                <div class="flex items-start justify-between mb-5">
+                    <div class="w-11 h-11 rounded-xl bg-violet-500/10 flex items-center justify-center border border-violet-500/20">
+                        <i class="fas fa-robot text-violet-400"></i>
+                    </div>
+                    <a href="https://github.com/Rahulroy5/Mini-Agent-Orchestrator" target="_blank" class="text-slate-600 hover:text-slate-300 transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+                <h3 class="text-base font-bold text-white mb-2">Mini Agent Orchestrator</h3>
+                <p class="text-slate-500 text-sm leading-relaxed flex-1 mb-5">
+                    Production-grade agent orchestration: dependency-aware tool execution, LLM planner with deterministic regex fallback, bounded retries. Built without any agent framework.
+                </p>
+                <div class="flex flex-wrap gap-1.5">
+                    <span class="text-xs text-violet-400 bg-violet-400/10 px-2.5 py-1 rounded-lg">FastAPI</span>
+                    <span class="text-xs text-blue-400 bg-blue-400/10 px-2.5 py-1 rounded-lg">Ollama</span>
+                    <span class="text-xs text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded-lg">Pydantic v2</span>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 flex flex-col" data-aos="fade-up" data-aos-delay="60">
+                <div class="flex items-start justify-between mb-5">
+                    <div class="w-11 h-11 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                        <i class="fas fa-file-lines text-blue-400"></i>
+                    </div>
+                    <a href="https://github.com/Rahulroy5/rag-assistant" target="_blank" class="text-slate-600 hover:text-slate-300 transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+                <h3 class="text-base font-bold text-white mb-2">PDF Q&A Assistant</h3>
+                <p class="text-slate-500 text-sm leading-relaxed flex-1 mb-5">
+                    End-to-end RAG pipeline: PDF parsing, semantic chunking, ONNX embeddings via fastembed, ChromaDB retrieval, Gemini generation. Deployed publicly on Streamlit Cloud.
+                </p>
+                <div class="flex flex-wrap gap-1.5">
+                    <span class="text-xs text-blue-400 bg-blue-400/10 px-2.5 py-1 rounded-lg">Streamlit</span>
+                    <span class="text-xs text-violet-400 bg-violet-400/10 px-2.5 py-1 rounded-lg">ChromaDB</span>
+                    <span class="text-xs text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded-lg">Gemini</span>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 flex flex-col" data-aos="fade-up" data-aos-delay="120">
+                <div class="flex items-start justify-between mb-5">
+                    <div class="w-11 h-11 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20">
+                        <i class="fas fa-terminal text-cyan-400"></i>
+                    </div>
+                    <a href="https://github.com/Rahulroy5/tool-calling-from-scratch" target="_blank" class="text-slate-600 hover:text-slate-300 transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+                <h3 class="text-base font-bold text-white mb-2">Tool Calling from Scratch</h3>
+                <p class="text-slate-500 text-sm leading-relaxed flex-1 mb-5">
+                    LLM tool calling with zero frameworks. Custom incremental XML parser detects tool calls token-by-token mid-stream, executes them, and re-injects results into context.
+                </p>
+                <div class="flex flex-wrap gap-1.5">
+                    <span class="text-xs text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded-lg">FastAPI</span>
+                    <span class="text-xs text-blue-400 bg-blue-400/10 px-2.5 py-1 rounded-lg">SSE</span>
+                    <span class="text-xs text-violet-400 bg-violet-400/10 px-2.5 py-1 rounded-lg">Ollama</span>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 flex flex-col" data-aos="fade-up" data-aos-delay="0">
+                <div class="flex items-start justify-between mb-5">
+                    <div class="w-11 h-11 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                        <i class="fas fa-brain text-orange-400"></i>
+                    </div>
+                    <a href="https://github.com/Rahulroy5/nano-GPT" target="_blank" class="text-slate-600 hover:text-slate-300 transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+                <h3 class="text-base font-bold text-white mb-2">nano-GPT</h3>
+                <p class="text-slate-500 text-sm leading-relaxed flex-1 mb-5">
+                    GPT transformer built from scratch in PyTorch — multi-head attention, causal masking, pre-norm training, cosine LR decay. 1.82 cross-entropy on Shakespeare.
+                </p>
+                <div class="flex flex-wrap gap-1.5">
+                    <span class="text-xs text-orange-400 bg-orange-400/10 px-2.5 py-1 rounded-lg">PyTorch</span>
+                    <span class="text-xs text-violet-400 bg-violet-400/10 px-2.5 py-1 rounded-lg">Transformers</span>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 flex flex-col" data-aos="fade-up" data-aos-delay="60">
+                <div class="flex items-start justify-between mb-5">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                        <i class="fas fa-eye text-emerald-400"></i>
+                    </div>
+                    <a href="https://huggingface.co/Rahulroy5" target="_blank" class="text-slate-600 hover:text-slate-300 transition-colors">
+                        <i class="fas fa-external-link-alt text-xl"></i>
+                    </a>
+                </div>
+                <h3 class="text-base font-bold text-white mb-2">Fine-tuned OCR Model</h3>
+                <p class="text-slate-500 text-sm leading-relaxed flex-1 mb-5">
+                    DeepSeek-OCR 3B fine-tuned with LoRA (r=16) on medical prescription images using Unsloth. Deployed on Hugging Face with vLLM at 2-3s/image latency.
+                </p>
+                <div class="flex flex-wrap gap-1.5">
+                    <span class="text-xs text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-lg">LoRA</span>
+                    <span class="text-xs text-violet-400 bg-violet-400/10 px-2.5 py-1 rounded-lg">vLLM</span>
+                    <span class="text-xs text-blue-400 bg-blue-400/10 px-2.5 py-1 rounded-lg">Unsloth</span>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 flex flex-col" data-aos="fade-up" data-aos-delay="120">
+                <div class="flex items-start justify-between mb-5">
+                    <div class="w-11 h-11 rounded-xl bg-pink-500/10 flex items-center justify-center border border-pink-500/20">
+                        <i class="fas fa-music text-pink-400"></i>
+                    </div>
+                    <a href="https://github.com/Rahulroy5/Music-Genre-Clustering" target="_blank" class="text-slate-600 hover:text-slate-300 transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+                <h3 class="text-base font-bold text-white mb-2">Music Genre Clustering</h3>
+                <p class="text-slate-500 text-sm leading-relaxed flex-1 mb-5">
+                    Unsupervised ML clustering 100K+ songs with K-Means, DBSCAN, and GMM. PCA dimensionality reduction, silhouette score and elbow method validation.
+                </p>
+                <div class="flex flex-wrap gap-1.5">
+                    <span class="text-xs text-pink-400 bg-pink-400/10 px-2.5 py-1 rounded-lg">Scikit-learn</span>
+                    <span class="text-xs text-violet-400 bg-violet-400/10 px-2.5 py-1 rounded-lg">PCA</span>
+                    <span class="text-xs text-blue-400 bg-blue-400/10 px-2.5 py-1 rounded-lg">Python</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center mt-14" data-aos="fade-up">
+            <a href="https://github.com/Rahulroy5" target="_blank"
+               class="btn-outline px-8 py-3 rounded-xl font-semibold text-slate-300 text-sm inline-flex items-center gap-2">
+                <i class="fab fa-github"></i> View all projects on GitHub
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ SKILLS ════════════════════════════════════════════════ -->
+<section id="skills" class="py-28" style="background:rgba(255,255,255,0.01)">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="mb-16" data-aos="fade-up">
+            <p class="section-label mb-3">WHAT I USE</p>
+            <h2 class="text-4xl font-bold text-white">Skills</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+            <div data-aos="fade-up" data-aos-delay="0">
+                <h3 class="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-4">AI & LLMs</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">LangChain</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">LangGraph</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">LlamaIndex</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">vLLM</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Hugging Face</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">RAG</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Agents</span>
+                </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="60">
+                <h3 class="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-4">ML & Deep Learning</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">PyTorch</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">TensorFlow</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Scikit-learn</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Keras</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">XGBoost</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">LoRA</span>
+                </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="120">
+                <h3 class="text-xs font-semibold text-cyan-400 uppercase tracking-widest mb-4">Backend & Infra</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">FastAPI</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Python</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Docker</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Terraform</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">RunPod</span>
+                </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="0">
+                <h3 class="text-xs font-semibold text-orange-400 uppercase tracking-widest mb-4">Data</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Pandas</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">NumPy</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Matplotlib</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">ChromaDB</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">spaCy</span>
+                </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="60">
+                <h3 class="text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-4">Computer Vision</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">OpenCV</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">FFmpeg</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">GPT-4 Vision</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">VLMs</span>
+                </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="120">
+                <h3 class="text-xs font-semibold text-pink-400 uppercase tracking-widest mb-4">Tools</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Git</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Streamlit</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Jupyter</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Linux</span>
+                    <span class="skill-chip text-sm px-3 py-2 rounded-xl text-slate-300">Unsloth</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══ ACHIEVEMENTS ══════════════════════════════════════════ -->
+<section id="achievements" class="py-28">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="mb-16" data-aos="fade-up">
+            <p class="section-label mb-3">BEYOND CODE</p>
+            <h2 class="text-4xl font-bold text-white">Achievements</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+            <div class="glass-card rounded-2xl p-6" data-aos="fade-up" data-aos-delay="0">
+                <div class="text-3xl mb-4">🥇</div>
+                <h3 class="font-bold text-white mb-2">Gold Medal — NSO</h3>
+                <p class="text-slate-500 text-sm">National Science Olympiad, Science Olympiad Foundation</p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6" data-aos="fade-up" data-aos-delay="60">
+                <div class="text-3xl mb-4">🥉</div>
+                <h3 class="font-bold text-white mb-2">Bronze Medal — IMO</h3>
+                <p class="text-slate-500 text-sm">International Mathematics Olympiad, Science Olympiad Foundation</p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6" data-aos="fade-up" data-aos-delay="120">
+                <div class="text-3xl mb-4">🏋️</div>
+                <h3 class="font-bold text-white mb-2">2nd Runner-Up — Powerlifting</h3>
+                <p class="text-slate-500 text-sm">345kg total at 60kg bodyweight — Open Institute Championship, IIT Bombay</p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6" data-aos="fade-up" data-aos-delay="0">
+                <div class="text-3xl mb-4">👨‍🏫</div>
+                <h3 class="font-bold text-white mb-2">Mentored 70+ Students</h3>
+                <p class="text-slate-500 text-sm">Weekly tutorials and lab sessions for ES 308 and ES 624 courses at IIT Bombay</p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6" data-aos="fade-up" data-aos-delay="60">
+                <div class="text-3xl mb-4">🤖</div>
+                <h3 class="font-bold text-white mb-2">ML Mentor — ITSA IIT Bombay</h3>
+                <p class="text-slate-500 text-sm">Co-mentored 10+ students in Seasons of Code: Intro to ML, Summer 2025</p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6" data-aos="fade-up" data-aos-delay="120">
+                <div class="text-3xl mb-4">🎖️</div>
+                <h3 class="font-bold text-white mb-2">National Cadet Corps</h3>
+                <p class="text-slate-500 text-sm">Completed one-year NCC training program at IIT Bombay</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══ BLOG ══════════════════════════════════════════════════ -->
+<section id="blog" class="py-28" style="background:rgba(255,255,255,0.01)">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="mb-16" data-aos="fade-up">
+            <p class="section-label mb-3">THOUGHTS & WRITING</p>
+            <h2 class="text-4xl font-bold text-white">Blog</h2>
+        </div>
+        <div class="glass-card rounded-2xl p-20 max-w-lg text-center" data-aos="fade-up" data-aos-delay="100">
+            <div class="text-5xl mb-5">✍️</div>
+            <h3 class="text-xl font-bold text-white mb-3">Coming Soon</h3>
+            <p class="text-slate-500 text-sm leading-relaxed">Writing about AI systems, LLMs, building from first principles, and things I learn along the way.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ CONTACT ═══════════════════════════════════════════════ -->
+<section id="contact" class="py-28">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="mb-16" data-aos="fade-up">
+            <p class="section-label mb-3">LET'S TALK</p>
+            <h2 class="text-4xl font-bold text-white">Get In Touch</h2>
+            <p class="text-slate-500 mt-3">Open to AI Engineer, ML Engineer, and Data Scientist roles</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5 max-w-2xl" data-aos="fade-up" data-aos-delay="100">
+
+            <a href="mailto:rroy3736@gmail.com" class="glass-card rounded-2xl p-6 text-center group">
+                <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-violet-500/20 transition-colors">
+                    <i class="fas fa-envelope text-violet-400 text-lg"></i>
+                </div>
+                <div class="text-xs text-slate-500 mb-1">Email</div>
+                <div class="text-white font-semibold text-xs">rroy3736@gmail.com</div>
+            </a>
+
+            <a href="https://linkedin.com/in/rahul-kumar-25a9b2252" target="_blank" class="glass-card rounded-2xl p-6 text-center group">
+                <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-500/20 transition-colors">
+                    <i class="fab fa-linkedin text-blue-400 text-lg"></i>
+                </div>
+                <div class="text-xs text-slate-500 mb-1">LinkedIn</div>
+                <div class="text-white font-semibold text-xs">rahul-kumar</div>
+            </a>
+
+            <a href="https://github.com/Rahulroy5" target="_blank" class="glass-card rounded-2xl p-6 text-center group">
+                <div class="w-12 h-12 rounded-xl bg-slate-500/10 border border-slate-500/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-slate-500/20 transition-colors">
+                    <i class="fab fa-github text-slate-400 text-lg"></i>
+                </div>
+                <div class="text-xs text-slate-500 mb-1">GitHub</div>
+                <div class="text-white font-semibold text-xs">Rahulroy5</div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════ -->
+<footer class="border-t border-white/5 py-8">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="mono text-xs text-slate-600">© 2026 Rahul Kumar</div>
+        <div class="flex gap-6 text-slate-600 text-sm">
+            <a href="https://github.com/Rahulroy5" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-github"></i></a>
+            <a href="https://linkedin.com/in/rahul-kumar-25a9b2252" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-linkedin"></i></a>
+            <a href="mailto:rroy3736@gmail.com" class="hover:text-white transition-colors"><i class="fas fa-envelope"></i></a>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+<script>
+    AOS.init({ duration: 650, once: true, offset: 60 });
+
+    new Typed('#typed-text', {
+        strings: ['AI Engineer', 'ML Engineer', 'Data Scientist', 'Agent Builder'],
+        typeSpeed: 55, backSpeed: 35, loop: true, backDelay: 1800,
+    });
+
+    window.addEventListener('scroll', () => {
+        const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+        document.getElementById('progress-bar').style.width = pct + '%';
+    });
+
+    document.getElementById('hamburger').addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.toggle('open');
+    });
+    document.querySelectorAll('#mobile-menu a').forEach(a =>
+        a.addEventListener('click', () => document.getElementById('mobile-menu').classList.remove('open'))
+    );
+</script>
+</body>
+</html>
