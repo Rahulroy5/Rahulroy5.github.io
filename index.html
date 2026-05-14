@@ -750,6 +750,42 @@
                         </p>
 
                     </div>
+
+                    <!-- Like + Comments -->
+                    <div class="mt-10 pt-6 border-t border-white/5 px-0">
+
+                        <!-- Like button -->
+                        <div class="flex items-center gap-4 mb-10">
+                            <button id="like-btn" onclick="handleLike()"
+                                class="flex items-center gap-2 px-5 py-2 rounded-full border border-white/10 text-slate-400 hover:text-violet-400 hover:border-violet-500/40 transition-all duration-200 text-sm select-none cursor-pointer">
+                                <span id="like-icon" style="font-size:1rem;">♡</span>
+                                <span id="like-count" class="font-semibold">—</span>
+                                <span>found this useful</span>
+                            </button>
+                        </div>
+
+                        <!-- Giscus Comments -->
+                        <div>
+                            <p class="text-slate-600 text-xs font-medium uppercase tracking-widest mb-4">Comments</p>
+                            <script src="https://giscus.app/client.js"
+                                data-repo="Rahulroy5/Rahulroy5.github.io"
+                                data-repo-id="REPLACE_REPO_ID"
+                                data-category="General"
+                                data-category-id="REPLACE_CATEGORY_ID"
+                                data-mapping="pathname"
+                                data-strict="0"
+                                data-reactions-enabled="0"
+                                data-emit-metadata="0"
+                                data-input-position="top"
+                                data-theme="dark"
+                                data-lang="en"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -846,6 +882,56 @@
         post.style.display = visible ? 'none' : 'block';
         chevron.style.transform = visible ? 'rotate(0deg)' : 'rotate(180deg)';
     }
+</script>
+
+<!-- Firebase likes (module script so it can import from CDN) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ── STEP 1: Replace these values with your Firebase project config ──────────
+const firebaseConfig = {
+    apiKey:            "REPLACE_FIREBASE_API_KEY",
+    authDomain:        "REPLACE_PROJECT_ID.firebaseapp.com",
+    databaseURL:       "https://REPLACE_PROJECT_ID-default-rtdb.firebaseio.com",
+    projectId:         "REPLACE_PROJECT_ID",
+    storageBucket:     "REPLACE_PROJECT_ID.firebasestorage.app",
+    messagingSenderId: "REPLACE_SENDER_ID",
+    appId:             "REPLACE_APP_ID"
+};
+// ────────────────────────────────────────────────────────────────────────────
+
+try {
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+    const likeRef = ref(db, 'blog/rag-post/likes');
+
+    // Live count
+    onValue(likeRef, (snap) => {
+        const el = document.getElementById('like-count');
+        if (el) el.textContent = snap.val() ?? 0;
+    });
+
+    // Expose to onclick (module scope is isolated from window by default)
+    window.handleLike = function () {
+        if (localStorage.getItem('liked-rag-post')) return;
+        runTransaction(likeRef, (n) => (n || 0) + 1);
+        localStorage.setItem('liked-rag-post', 'true');
+        _markLiked();
+    };
+
+    // Restore filled heart if already liked in this browser
+    if (localStorage.getItem('liked-rag-post')) _markLiked();
+
+    function _markLiked() {
+        const icon = document.getElementById('like-icon');
+        const btn  = document.getElementById('like-btn');
+        if (icon) { icon.textContent = '♥'; icon.style.color = '#a78bfa'; }
+        if (btn)  btn.style.borderColor = 'rgba(167,139,250,0.45)';
+    }
+} catch (e) {
+    console.warn('Firebase not configured yet:', e.message);
+}
 </script>
 </body>
 </html>
