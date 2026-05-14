@@ -639,93 +639,114 @@
                 <div class="p-8">
                     <div class="flex items-center gap-3 mb-5">
                         <span class="text-xs text-violet-400 bg-violet-400/10 px-3 py-1 rounded-full border border-violet-400/20">AI Engineering</span>
-                        <span class="text-xs text-slate-500">May 2026 · 5 min read</span>
+                        <span class="text-xs text-slate-500">May 2026 · 6 min read</span>
                     </div>
                     <h3 class="text-2xl font-bold text-white mb-3 leading-snug">
-                        AI Engineering Is Not Prompt Engineering
+                        I Broke My RAG Pipeline Five Times. Here's What I Actually Learned.
                     </h3>
                     <p class="text-slate-400 leading-relaxed">
-                        I built a nano-GPT, struggled with free GPUs, and broke my RAG pipeline three ways before it worked. Here's what I actually learned about what it means to be an AI engineer.
+                        Building a RAG system looks simple on paper — five steps, clean diagram, done. Then you actually build one. Every fix breaks something else. That's not a bug in your process. That's the job.
                     </p>
                     <div class="mt-5 text-violet-400 text-sm font-medium flex items-center gap-2">
                         Read post <i class="fas fa-chevron-down text-xs transition-transform" id="chevron"></i>
                     </div>
                 </div>
 
-                <!-- Full post (hidden by default) -->
-                <div id="blog-post" style="display:none" class="border-t border-white/5 px-8 pb-8">
-                    <div class="prose-custom pt-8 space-y-6 text-slate-400 leading-relaxed text-sm">
+                <!-- Full post -->
+                <div id="blog-post" style="display:none" class="border-t border-white/5 px-8 pb-10">
+                    <div class="pt-8 space-y-6 text-slate-400 leading-relaxed text-sm">
 
                         <p>
-                            There's a version of AI engineering that looks easy from the outside. You watch Andrej Karpathy build a GPT in two hours on YouTube. The code is clean, the explanations are crisp, the loss curve goes down. You think: I can do this.
+                            The architecture of a RAG system fits on a napkin. Parse a document. Chunk the text. Embed the chunks. Store them in a vector database. At query time, embed the question, retrieve the closest chunks by cosine similarity, pass them as context to an LLM, get an answer.
                         </p>
-
                         <p>
-                            Then you try it yourself.
+                            Five steps. Clean diagram. Looks obvious.
                         </p>
-
-                        <h4 class="text-white font-semibold text-base pt-2">The GPU Problem Nobody Talks About</h4>
-
                         <p>
-                            The first thing that hit me when I tried to run nano-GPT wasn't the math — it was the hardware. Karpathy's version trains GPT-2 (124M parameters) on 8×A100 GPUs in 4 days. I had a free Colab session that disconnects after 90 minutes and forgets everything.
+                            I built one. It took me weeks. And almost every day of those weeks, something that was working stopped working because I fixed something else. This is the story of that, and what it taught me about what AI engineering actually means.
                         </p>
 
+                        <h4 class="text-white font-bold text-base pt-4">Break #1 — Chunking by word count</h4>
                         <p>
-                            So you learn to be resourceful. You scale down the model. You cut the context window from 1024 to 64. You reduce layers, reduce heads, reduce embedding size — and then ask yourself: at what point is this still a GPT? You learn that the architecture isn't magic. It's a set of choices with tradeoffs. Smaller model, faster training, worse loss. More layers, more capacity, more memory. Every knob has a cost.
+                            My first version split text every 500 words with a 50-word overlap. Simple, works in tutorials. In practice, it splits mid-sentence constantly. A chunk would end with <span class="mono text-violet-300 text-xs bg-violet-400/10 px-1.5 py-0.5 rounded">"The patient was prescribed"</span> and the next chunk would start with <span class="mono text-violet-300 text-xs bg-violet-400/10 px-1.5 py-0.5 rounded">"metformin 500mg twice daily"</span>. Neither chunk is semantically complete on its own.
                         </p>
-
                         <p>
-                            That's something no tutorial tells you — because the tutorial has the hardware already.
+                            When you embed an incomplete thought, the vector doesn't represent the meaning — it represents noise. The retrieval step returns chunks that score high on cosine similarity but contain half an idea. The LLM then tries to answer from half-ideas and either hallucinates the missing half or says it doesn't know.
                         </p>
-
-                        <h4 class="text-white font-semibold text-base pt-2">When the RAG Pipeline Broke</h4>
-
                         <p>
-                            I ran into the same wall building my RAG assistant. The concept is straightforward: parse a PDF, chunk it, embed the chunks, retrieve the relevant ones, feed them to an LLM, get an answer. Simple pipeline. Five steps.
+                            I spent two days debugging what I thought was a retrieval problem. Changed the number of results returned. Changed the similarity threshold. Nothing helped. Eventually I printed the raw chunks and read them. That's when I saw it — the chunks themselves were broken.
                         </p>
-
-                        <p>
-                            Except when I changed the chunk size to fix retrieval quality, the embeddings got slower. When I switched embedding models for speed, the retrieval quality dropped. When I tuned the retrieval to return more chunks for better context, the LLM started hallucinating because the context was too noisy. Fix one thing, break two others.
-                        </p>
-
-                        <p>
-                            I spent three days debugging what I thought was a generation problem. It wasn't. It was a chunking problem — I was splitting sentences mid-thought, so the retrieved chunks were semantically incomplete. The LLM wasn't the issue. The LLM was doing its best with broken input.
-                        </p>
-
-                        <p>
-                            That's when something clicked: <span class="text-white font-medium">a pipeline is only as good as its weakest component, and the weakest component is almost never the one you're looking at.</span>
-                        </p>
-
-                        <h4 class="text-white font-semibold text-base pt-2">What AI Engineering Actually Is</h4>
-
-                        <p>
-                            There's a misconception — especially now — that AI engineering is just prompting. That you describe what you want to an agent, it writes the code, and you ship. That might get you a demo. It won't get you a system.
-                        </p>
-
-                        <p>
-                            Real AI engineering is: understanding why you chose this embedding model and not another one. Knowing what happens to retrieval quality when your chunks are too large. Debugging why the same question returns different answers on different runs. Designing a system that degrades gracefully when the LLM returns garbage instead of crashing.
-                        </p>
-
-                        <p>
-                            It's about <span class="text-white font-medium">scalability</span> — will this work when the PDF is 200 pages instead of 10? <span class="text-white font-medium">Reliability</span> — what happens when the API times out? <span class="text-white font-medium">Debuggability</span> — can you isolate which part of the pipeline failed and why?
-                        </p>
-
-                        <p>
-                            Vibe coding gives you the first version. Engineering gives you the tenth version — the one that actually works under pressure.
-                        </p>
-
-                        <h4 class="text-white font-semibold text-base pt-2">The Thing I'd Tell Myself</h4>
-
-                        <p>
-                            When something breaks — and it will — resist the urge to fix all of it at once. I wasted days chasing symptoms because I was changing three things simultaneously. The discipline of changing one variable at a time, understanding the result, then moving forward is not a beginner habit. It's the senior engineer habit.
-                        </p>
-
-                        <p>
-                            Karpathy's video makes it look simple because he already went through the hard part. The video is the clean version. The learning is in the mess before the video.
-                        </p>
-
                         <p class="text-slate-500 italic border-l-2 border-violet-500/40 pl-4">
-                            Build the thing. Break the thing. Understand why it broke. That's the job.
+                            Lesson: garbage in, garbage out. An LLM cannot reason correctly from semantically broken input, no matter how good the model is.
+                        </p>
+
+                        <h4 class="text-white font-bold text-base pt-4">Break #2 — Switching embedding models</h4>
+                        <p>
+                            After fixing chunking, retrieval improved — but it was slow. My embedding model (<span class="mono text-violet-300 text-xs bg-violet-400/10 px-1.5 py-0.5 rounded">nomic-embed-text</span> via Ollama) was running locally and taking 3-4 seconds per chunk on a large document. I switched to a smaller, faster model.
+                        </p>
+                        <p>
+                            Retrieval immediately got worse. Questions that previously returned the right chunk started returning tangentially related ones. Why? Because different embedding models have different vector spaces. <span class="mono text-violet-300 text-xs bg-violet-400/10 px-1.5 py-0.5 rounded">nomic-embed-text</span> is trained on a large diverse corpus and produces 768-dimensional vectors with strong semantic structure. The smaller model I switched to produces 384-dimensional vectors — faster to compute, but with less nuanced similarity distinctions.
+                        </p>
+                        <p>
+                            The cosine similarity scores were still high — the numbers looked fine. But "high similarity in a weaker vector space" is not the same as "semantically relevant." The metric was lying to me because the space it was measuring in had changed.
+                        </p>
+                        <p class="text-slate-500 italic border-l-2 border-violet-500/40 pl-4">
+                            Lesson: when you change an embedding model, you're not just changing speed — you're changing what "similar" means. You have to re-evaluate retrieval quality from scratch, not just check that the numbers look similar.
+                        </p>
+
+                        <h4 class="text-white font-bold text-base pt-4">Break #3 — Retrieving more chunks to improve context</h4>
+                        <p>
+                            My retrieval was returning top-2 chunks. Some answers felt incomplete, so I bumped it to top-5. The logic made sense: more context, better answers.
+                        </p>
+                        <p>
+                            The opposite happened. Answers got worse. The LLM started contradicting itself within a single response. It would say "the document states X" in one sentence and "the document states not-X" two sentences later.
+                        </p>
+                        <p>
+                            The problem: chunks 3, 4, and 5 weren't the second-most-relevant content — they were the content that happened to use similar words but came from a completely different context in the document. When you pack five chunks into a context window, especially from different sections, the LLM doesn't know which one to trust. It tries to synthesize all of them into a coherent answer and produces incoherent output.
+                        </p>
+                        <p>
+                            More context is not always better context. Relevant and focused beats large and noisy.
+                        </p>
+                        <p class="text-slate-500 italic border-l-2 border-violet-500/40 pl-4">
+                            Lesson: retrieval quality matters more than retrieval quantity. Two highly relevant chunks outperform five mediocre ones every time.
+                        </p>
+
+                        <h4 class="text-white font-bold text-base pt-4">Break #4 — The system prompt I stopped thinking about</h4>
+                        <p>
+                            At some point my answers started getting verbose. The LLM would give a correct answer, then keep going — adding context it wasn't asked for, speculating beyond the document, sometimes contradicting the correct answer it just gave.
+                        </p>
+                        <p>
+                            I checked chunking. I checked retrieval. Both were fine. The issue was the system prompt I had written weeks earlier and stopped thinking about: <span class="mono text-violet-300 text-xs bg-violet-400/10 px-1.5 py-0.5 rounded">"You are a helpful assistant. Answer the user's question."</span>
+                        </p>
+                        <p>
+                            "Helpful" to an LLM means thorough. It means adding context. It means not leaving the user with an incomplete picture. That instruction was actively fighting against what I wanted — a precise, document-grounded answer. The model was following its training, not my intent, because I hadn't been specific enough about my intent.
+                        </p>
+                        <p>
+                            I rewrote it: <span class="mono text-violet-300 text-xs bg-violet-400/10 px-1.5 py-0.5 rounded">"Answer using ONLY the provided context. If the answer is not in the context, say so. Be concise."</span> Three constraints. The verbosity stopped immediately.
+                        </p>
+                        <p class="text-slate-500 italic border-l-2 border-violet-500/40 pl-4">
+                            Lesson: the system prompt is part of the pipeline. It's not configuration — it's code. It needs the same precision you'd give a function signature.
+                        </p>
+
+                        <h4 class="text-white font-bold text-base pt-4">What this actually taught me about AI engineering</h4>
+                        <p>
+                            Every one of these breaks had the same pattern: I changed one thing to fix a problem and introduced a different problem elsewhere. The pipeline was a system — each component's output was another component's input — and I wasn't thinking about it as a system. I was thinking about it as five independent steps.
+                        </p>
+                        <p>
+                            That shift in thinking — from "fix the broken part" to "understand how the parts interact" — is the difference between someone who can get a demo working and someone who can build something reliable.
+                        </p>
+                        <p>
+                            AI engineering right now gets conflated with prompt engineering, with vibe coding, with describing what you want to an agent and watching it appear. That approach gets you a first version. It doesn't get you a system that works on documents it has never seen, at 2am, for a user you've never met.
+                        </p>
+                        <p>
+                            Reliability comes from understanding every component well enough to predict how it fails. Scalability comes from knowing which assumptions hold at 10 documents and which ones collapse at 10,000. Debuggability comes from building so that when something breaks — and it will — you can isolate exactly where.
+                        </p>
+                        <p>
+                            None of that comes from prompting. It comes from building, breaking, and understanding why it broke.
+                        </p>
+
+                        <p class="text-slate-500 italic border-l-2 border-violet-500/40 pl-4 mt-8">
+                            The diagram is five boxes and four arrows. The engineering is everything that happens when reality doesn't match the diagram.
                         </p>
 
                     </div>
