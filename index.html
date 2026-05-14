@@ -631,10 +631,106 @@
             <p class="section-label mb-3">THOUGHTS & WRITING</p>
             <h2 class="text-4xl font-bold text-white">Blog</h2>
         </div>
-        <div class="glass-card rounded-2xl p-20 max-w-lg text-center" data-aos="fade-up" data-aos-delay="100">
-            <div class="text-5xl mb-5">✍️</div>
-            <h3 class="text-xl font-bold text-white mb-3">Coming Soon</h3>
-            <p class="text-slate-500 text-sm leading-relaxed">Writing about AI systems, LLMs, building from first principles, and things I learn along the way.</p>
+
+        <!-- Blog Post Card -->
+        <div class="max-w-3xl" data-aos="fade-up" data-aos-delay="100">
+            <div class="glass-card rounded-2xl overflow-hidden cursor-pointer" onclick="togglePost()">
+                <!-- Card header -->
+                <div class="p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <span class="text-xs text-violet-400 bg-violet-400/10 px-3 py-1 rounded-full border border-violet-400/20">AI Engineering</span>
+                        <span class="text-xs text-slate-500">May 2026 · 5 min read</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3 leading-snug">
+                        AI Engineering Is Not Prompt Engineering
+                    </h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        I built a nano-GPT, struggled with free GPUs, and broke my RAG pipeline three ways before it worked. Here's what I actually learned about what it means to be an AI engineer.
+                    </p>
+                    <div class="mt-5 text-violet-400 text-sm font-medium flex items-center gap-2">
+                        Read post <i class="fas fa-chevron-down text-xs transition-transform" id="chevron"></i>
+                    </div>
+                </div>
+
+                <!-- Full post (hidden by default) -->
+                <div id="blog-post" style="display:none" class="border-t border-white/5 px-8 pb-8">
+                    <div class="prose-custom pt-8 space-y-6 text-slate-400 leading-relaxed text-sm">
+
+                        <p>
+                            There's a version of AI engineering that looks easy from the outside. You watch Andrej Karpathy build a GPT in two hours on YouTube. The code is clean, the explanations are crisp, the loss curve goes down. You think: I can do this.
+                        </p>
+
+                        <p>
+                            Then you try it yourself.
+                        </p>
+
+                        <h4 class="text-white font-semibold text-base pt-2">The GPU Problem Nobody Talks About</h4>
+
+                        <p>
+                            The first thing that hit me when I tried to run nano-GPT wasn't the math — it was the hardware. Karpathy's version trains GPT-2 (124M parameters) on 8×A100 GPUs in 4 days. I had a free Colab session that disconnects after 90 minutes and forgets everything.
+                        </p>
+
+                        <p>
+                            So you learn to be resourceful. You scale down the model. You cut the context window from 1024 to 64. You reduce layers, reduce heads, reduce embedding size — and then ask yourself: at what point is this still a GPT? You learn that the architecture isn't magic. It's a set of choices with tradeoffs. Smaller model, faster training, worse loss. More layers, more capacity, more memory. Every knob has a cost.
+                        </p>
+
+                        <p>
+                            That's something no tutorial tells you — because the tutorial has the hardware already.
+                        </p>
+
+                        <h4 class="text-white font-semibold text-base pt-2">When the RAG Pipeline Broke</h4>
+
+                        <p>
+                            I ran into the same wall building my RAG assistant. The concept is straightforward: parse a PDF, chunk it, embed the chunks, retrieve the relevant ones, feed them to an LLM, get an answer. Simple pipeline. Five steps.
+                        </p>
+
+                        <p>
+                            Except when I changed the chunk size to fix retrieval quality, the embeddings got slower. When I switched embedding models for speed, the retrieval quality dropped. When I tuned the retrieval to return more chunks for better context, the LLM started hallucinating because the context was too noisy. Fix one thing, break two others.
+                        </p>
+
+                        <p>
+                            I spent three days debugging what I thought was a generation problem. It wasn't. It was a chunking problem — I was splitting sentences mid-thought, so the retrieved chunks were semantically incomplete. The LLM wasn't the issue. The LLM was doing its best with broken input.
+                        </p>
+
+                        <p>
+                            That's when something clicked: <span class="text-white font-medium">a pipeline is only as good as its weakest component, and the weakest component is almost never the one you're looking at.</span>
+                        </p>
+
+                        <h4 class="text-white font-semibold text-base pt-2">What AI Engineering Actually Is</h4>
+
+                        <p>
+                            There's a misconception — especially now — that AI engineering is just prompting. That you describe what you want to an agent, it writes the code, and you ship. That might get you a demo. It won't get you a system.
+                        </p>
+
+                        <p>
+                            Real AI engineering is: understanding why you chose this embedding model and not another one. Knowing what happens to retrieval quality when your chunks are too large. Debugging why the same question returns different answers on different runs. Designing a system that degrades gracefully when the LLM returns garbage instead of crashing.
+                        </p>
+
+                        <p>
+                            It's about <span class="text-white font-medium">scalability</span> — will this work when the PDF is 200 pages instead of 10? <span class="text-white font-medium">Reliability</span> — what happens when the API times out? <span class="text-white font-medium">Debuggability</span> — can you isolate which part of the pipeline failed and why?
+                        </p>
+
+                        <p>
+                            Vibe coding gives you the first version. Engineering gives you the tenth version — the one that actually works under pressure.
+                        </p>
+
+                        <h4 class="text-white font-semibold text-base pt-2">The Thing I'd Tell Myself</h4>
+
+                        <p>
+                            When something breaks — and it will — resist the urge to fix all of it at once. I wasted days chasing symptoms because I was changing three things simultaneously. The discipline of changing one variable at a time, understanding the result, then moving forward is not a beginner habit. It's the senior engineer habit.
+                        </p>
+
+                        <p>
+                            Karpathy's video makes it look simple because he already went through the hard part. The video is the clean version. The learning is in the mess before the video.
+                        </p>
+
+                        <p class="text-slate-500 italic border-l-2 border-violet-500/40 pl-4">
+                            Build the thing. Break the thing. Understand why it broke. That's the job.
+                        </p>
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -721,6 +817,14 @@
     document.querySelectorAll('#mobile-menu a').forEach(a =>
         a.addEventListener('click', () => document.getElementById('mobile-menu').classList.remove('open'))
     );
+
+    function togglePost() {
+        const post = document.getElementById('blog-post');
+        const chevron = document.getElementById('chevron');
+        const visible = post.style.display !== 'none';
+        post.style.display = visible ? 'none' : 'block';
+        chevron.style.transform = visible ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
 </script>
 </body>
 </html>
