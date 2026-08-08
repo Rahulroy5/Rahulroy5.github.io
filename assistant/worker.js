@@ -16,7 +16,9 @@ const ALLOWED_ORIGINS = [
   'http://localhost:8471', // local dev preview
 ];
 
-const MODEL = 'gemini-2.5-flash';
+// 'latest' alias: tracks the current stable Flash model, so the assistant
+// survives Google retiring specific versions (2.5-flash already 404s for new keys).
+const MODEL = 'gemini-flash-latest';
 
 const SYSTEM_PROMPT = `You are the AI assistant embedded in the portfolio terminal of
 Rahul Kumar. Visitors type questions; you answer them about Rahul, in first person
