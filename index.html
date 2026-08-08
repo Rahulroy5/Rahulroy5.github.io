@@ -1055,7 +1055,7 @@ footer {
                 </div>
             </div>
         </div>
-        <p class="play-hint rv">hint: try <b>help</b>, <b>projects</b>, <b>contact</b>, <b>hire</b> … or <b>sudo hire</b> if you're serious.</p>
+        <p class="play-hint rv">hint: try <b>help</b>, <b>projects</b>, <b>ask what has rahul fine-tuned?</b> … or <b>sudo hire</b> if you're serious.</p>
     </div>
 </section>
 
@@ -1228,6 +1228,51 @@ var history = [];
 var histIdx = -1;
 var vimMode = false;
 
+/* AI assistant — Gemini via Cloudflare Worker proxy (see /assistant/worker.js).
+   Empty URL = not deployed yet; `ask` degrades gracefully. */
+var ASSISTANT_URL = '';
+var chatHistory = [];
+
+function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function askAI(question) {
+    if (!ASSISTANT_URL) {
+        print('assistant is not wired up yet — meanwhile, <span class="hl">help</span> lists what I can answer, or email ' +
+              '<a href="mailto:rroy3736@gmail.com">rroy3736@gmail.com</a>.');
+        return;
+    }
+    if (!question) { print('usage: <span class="hl">ask &lt;question about rahul&gt;</span>'); return; }
+    var thinking = document.createElement('div');
+    thinking.className = 'out';
+    thinking.innerHTML = '<span class="hl">…</span> querying rahul-kumar';
+    out.insertBefore(thinking, out.lastElementChild);
+    out.scrollTop = out.scrollHeight;
+
+    chatHistory.push({ role: 'user', text: question });
+    fetch(ASSISTANT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: chatHistory.slice(-8) })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        if (data.answer) {
+            chatHistory.push({ role: 'model', text: data.answer });
+            thinking.innerHTML = escapeHtml(data.answer);
+        } else {
+            chatHistory.pop();
+            thinking.innerHTML = '<span class="er">' + escapeHtml(data.error || 'no response') + '</span>';
+        }
+        out.scrollTop = out.scrollHeight;
+    })
+    .catch(function () {
+        chatHistory.pop();
+        thinking.innerHTML = '<span class="er">assistant unreachable</span> — email <a href="mailto:rroy3736@gmail.com">rroy3736@gmail.com</a> instead.';
+    });
+}
+
 var LINK = function (href, label) {
     return '<a href="' + href + '" target="_blank" rel="noopener">' + (label || href) + '</a>';
 };
@@ -1236,6 +1281,7 @@ var COMMANDS = {
     help: function () {
         return [
             '<span class="hl">available commands</span>',
+            '  ask &lt;q&gt;       ask the AI anything about rahul',
             '  whoami        who is rahul?',
             '  projects      shipped artifacts',
             '  experience    training run / work history',
@@ -1354,6 +1400,7 @@ function run(raw) {
     if (!handler) {
         var parts = cmd.split(/\s+/);
         var head = parts[0].toLowerCase();
+        if (head === 'ask') { askAI(cmd.slice(4).trim()); return; }
         if (head === 'echo') handler = function () { return COMMANDS.echo(cmd.slice(5)); };
         else if (head === 'sudo') handler = function () { return 'sudo: only <span class="hl">sudo hire</span> is permitted for visitors.'; };
         else if (head === 'cat') handler = function () { return 'cat: ' + (parts[1] || '') + ': try <span class="hl">cat hire.sh</span>'; };
@@ -1367,7 +1414,7 @@ function run(raw) {
             print(res);
         }
     } else {
-        print('<span class="er">command not found:</span> ' + key.replace(/</g, '&lt;') + ' — type <span class="hl">help</span>');
+        print('<span class="er">command not found:</span> ' + key.replace(/</g, '&lt;') + ' — type <span class="hl">help</span>, or <span class="hl">ask</span> the AI: <span class="hl">ask ' + key.replace(/</g, '&lt;') + '</span>');
     }
 }
 
